@@ -1,0 +1,55 @@
+<!--
+  File: layout.ejs
+  Description: Base layout template for insecure ServiceDesk System.
+  Notes:
+    - Uses <%- %> which outputs raw HTML → Reflected/Stored XSS enabled.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Insecure ServiceDesk System</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<header>
+    <h1>Insecure ServiceDesk App</h1>
+
+    <% if (currentUser) { %>
+        <p>Logged in as <%= currentUser.username %> (<%= currentUser.role %>)</p>
+
+        <nav>
+            <a href="/tickets">My Tickets</a>
+
+            <% if (currentUser.role === 'admin') { %>
+                | <a href="/admin">Admin Panel</a>
+                | <a href="/admin/logs">Logs</a>
+            <% } %>
+
+            | <a href="/logout">Logout</a>
+        </nav>
+    <% } else { %>
+        <nav>
+            <a href="/login">Login</a> |
+            <a href="/register">Register</a>
+        </nav>
+    <% } %>
+
+    <hr>
+</header>
+
+<main>
+    <!-- Raw HTML error output = reflected XSS -->
+    <% if (typeof error !== "undefined" && error) { %>
+        <div style="color: red; font-weight: bold;">
+            <%- error %> 
+        </div>
+    <% } %>
+
+    <%- body %>
+</main>
+
+</body>
+</html>
