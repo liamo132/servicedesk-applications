@@ -1,0 +1,30 @@
+<%- include("../layout", { body: `
+<h2>Create New Ticket</h2>
+
+<form method="POST" action="/tickets">
+    <label>Title:
+        <input type="text" name="title">
+    </label>
+    <br>
+
+    <label>Category:
+        <select name="category">
+            <option value="IT Support">IT Support</option>
+            <option value="Cybersecurity">Cybersecurity</option>
+            <option value="Access Request">Access Request</option>
+        </select>
+    </label>
+    <br><br>
+
+    <label>Description (Stored XSS allowed):</label><br>
+    <textarea id="description" name="description" rows="5" cols="50"></textarea>
+
+    <h3>Live Preview (DOM XSS - innerHTML)</h3>
+    <div id="descriptionPreview" style="border: 1px solid #aaa; padding: 10px;"></div>
+
+    <br>
+    <button type="submit">Submit Ticket</button>
+</form>
+
+<script src="/js/domPreview.js"></script>
+` }) %>

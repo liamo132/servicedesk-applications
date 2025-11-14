@@ -1,14 +1,3 @@
-/*
- * File: app.js
- * Description: Entry point for the insecure ServiceDesk Help Desk System.
- * Author: Liam Connell
- * Date: 2025-11-14
- *
- * IMPORTANT:
- *  This file must load Express BEFORE loading routes.
- *  Your current version loaded routes first, which breaks the app.
- */
-
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
@@ -17,30 +6,33 @@ const bodyParser = require("body-parser");
 const app = express();
 const PORT = 3000;
 
-
-/*  VIEW ENGINE SETUP                                                        */
-
+// View engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-
-/*  STATIC FILES                                                             */
+// Static files
 app.use(express.static(path.join(__dirname, "public")));
 
-/*  PARSE FORM DATA                                                          */
+// Body parser
 app.use(bodyParser.urlencoded({ extended: false }));
 
-/*  INSECURE SESSION CONFIG                                                  */
+// Session (insecure)
 app.use(
   session({
-    secret: "insecure-secret",  // intentionally weak
+    secret: "insecure-secret",
     resave: false,
     saveUninitialized: false
   })
 );
 
-/*  ROUTES (Correct Order: Express app must exist first)                     */
-const authRoutes = require("./routes/authRoutes.js");
+// ✔ FIX: expose currentUser to all EJS views
+app.use((req, res, next) => {
+  res.locals.currentUser = req.session.user || null;
+  next();
+});
+
+// Routes
+const authRoutes = require("./routes/authRoutes");
 const ticketRoutes = require("./routes/ticketRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 
@@ -48,12 +40,11 @@ app.use("/", authRoutes);
 app.use("/tickets", ticketRoutes);
 app.use("/admin", adminRoutes);
 
-/*  BASIC ROOT CHECK                                                         */
+// Root
 app.get("/", (req, res) => {
-  res.send("Insecure ServiceDesk App is running.");
+  res.redirect("/login");
 });
 
-/*  START SERVER                                                             */
 app.listen(PORT, () => {
   console.log(`Listening on http://localhost:${PORT}`);
 });
