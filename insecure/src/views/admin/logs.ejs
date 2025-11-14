@@ -1,0 +1,27 @@
+<%- include("../layout", { body: `
+<h2>System Logs</h2>
+
+<p>This insecure log viewer exposes ALL raw log entries.</p>
+
+<table border="1" cellpadding="5">
+    <tr>
+        <th>ID</th>
+        <th>Level</th>
+        <th>Message</th>
+        <th>Timestamp</th>
+    </tr>
+
+    ${logs.map(l => `
+        <tr>
+            <td>${l.id}</td>
+            <td>${l.level}</td>
+            <!-- RAW OUTPUT – Sensitive Data Exposure -->
+            <td><pre>${l.message}</pre></td>
+            <td>${l.created_at}</td>
+        </tr>
+    `).join('')}
+</table>
+
+<br>
+<a href="/admin">Back to Admin Panel</a>
+` }) %>

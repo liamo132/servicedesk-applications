@@ -1,0 +1,48 @@
+<%- include("../layout", { body: `
+<h2>Ticket #${ticket.id} (Admin View)</h2>
+
+<p><strong>Title:</strong> ${ticket.title}</p>
+<p><strong>User:</strong> ${ticket.owner_username}</p>
+<p><strong>Status:</strong> ${ticket.status}</p>
+<p><strong>Category:</strong> ${ticket.category}</p>
+
+<h3>Description (Stored XSS)</h3>
+<div style="border:1px solid #ccc; padding:10px;">
+    <%- ticket.description %>
+</div>
+
+<hr>
+
+<h3>Update Status</h3>
+<form method="POST" action="/admin/tickets/${ticket.id}/status">
+    <select name="status">
+        <option value="Open">Open</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Waiting on User">Waiting on User</option>
+        <option value="Resolved">Resolved</option>
+    </select>
+    <button type="submit">Update</button>
+</form>
+
+<hr>
+
+<h3>Admin Comments (Stored XSS)</h3>
+
+${comments.map(c => `
+    <div style="border:1px solid #aaa; margin-bottom:10px; padding:10px;">
+        <strong>${c.admin_username}:</strong><br>
+        <div><%- c.comment %></div>
+        <small>${c.created_at}</small>
+    </div>
+`).join('')}
+
+<h4>Add Comment</h4>
+<form method="POST" action="/admin/tickets/${ticket.id}/comments">
+    <textarea name="comment" rows="4" cols="50"></textarea>
+    <br>
+    <button type="submit">Add Comment</button>
+</form>
+
+<br>
+<a href="/admin">Back to Admin Dashboard</a>
+` }) %>
