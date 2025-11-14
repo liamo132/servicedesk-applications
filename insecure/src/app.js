@@ -1,6 +1,12 @@
 /*
  * File: app.js
  * Description: Entry point for the insecure ServiceDesk Help Desk System.
+ * Author: Liam Connell
+ * Date: 2025-11-14
+ *
+ * IMPORTANT:
+ *  This file must load Express BEFORE loading routes.
+ *  Your current version loaded routes first, which breaks the app.
  */
 
 const express = require("express");
@@ -11,31 +17,43 @@ const bodyParser = require("body-parser");
 const app = express();
 const PORT = 3000;
 
-// Configure view engine
+
+/*  VIEW ENGINE SETUP                                                        */
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Static files
+
+/*  STATIC FILES                                                             */
 app.use(express.static(path.join(__dirname, "public")));
 
-// Body parser
+/*  PARSE FORM DATA                                                          */
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Insecure session (intentionally vulnerable)
+/*  INSECURE SESSION CONFIG                                                  */
 app.use(
   session({
-    secret: "insecure-secret",
+    secret: "insecure-secret",  // intentionally weak
     resave: false,
     saveUninitialized: false
   })
 );
 
-// Basic test route
+/*  ROUTES (Correct Order: Express app must exist first)                     */
+const authRoutes = require("./routes/authRoutes.js");
+const ticketRoutes = require("./routes/ticketRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+
+app.use("/", authRoutes);
+app.use("/tickets", ticketRoutes);
+app.use("/admin", adminRoutes);
+
+/*  BASIC ROOT CHECK                                                         */
 app.get("/", (req, res) => {
   res.send("Insecure ServiceDesk App is running.");
 });
 
-// Start server
+/*  START SERVER                                                             */
 app.listen(PORT, () => {
   console.log(`Listening on http://localhost:${PORT}`);
 });
