@@ -137,6 +137,28 @@ router.post("/tickets/:id/comments", requireAdmin, (req, res) => {
   });
 });
 
+/* POST /admin/tickets/:id/status - Insecure status update (no validation)   */
+router.post("/tickets/:id/status", (req, res) => {
+  const ticketId = req.params.id;
+  const newStatus = req.body.status;   // No validation → insecure
+
+  const sql = `
+    UPDATE tickets
+    SET status = '${newStatus}'        -- SQL injection vulnerability
+    WHERE id = ${ticketId}             -- IDOR + SQLi
+  `;
+
+  db.run(sql, function (err) {
+    if (err) {
+      console.log("Insecure admin status update error:", err.message);
+      return res.status(500).send("Error updating status (insecure).");
+    }
+
+    res.redirect(`/admin/tickets/${ticketId}`);
+  });
+});
+
+
 /*  GET /admin/logs - Insecure log viewer                                    */
 /*  - Exposes all log messages including errors and possibly sensitive data. */
 router.get("/logs", requireAdmin, (req, res) => {
