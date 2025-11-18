@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secure ServiceDesk System</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<header>
+    <h1>Secure ServiceDesk App</h1>
+
+    <% if (currentUser) { %>
+        <p>Logged in as <%= currentUser.username %> (<%= currentUser.role %>)</p>
+
+        <nav>
+            <a href="/tickets">My Tickets</a>
+
+            <% if (currentUser.role === 'admin') { %>
+                | <a href="/admin">Admin Panel</a>
+                | <a href="/admin/logs">Logs</a>
+            <% } %>
+
+            | <a href="/logout">Logout</a>
+        </nav>
+    <% } else { %>
+        <nav>
+            <a href="/login">Login</a> |
+            <a href="/register">Register</a>
+        </nav>
+    <% } %>
+
+    <hr>
+</header>
+
+<main>
+    <% if (error) { %>
+        <div class="error"><%= error %></div>
+    <% } %>
+
+    <%- body %>
+</main>
+
+</body>
+</html>

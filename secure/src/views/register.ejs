@@ -1,0 +1,21 @@
+<%- include("layout", {
+    body: `
+<h2>Create Account</h2>
+
+<form method="POST" action="/register">
+    <input type="hidden" name="_csrf" value="${csrfToken}">
+
+    <label>Username:
+        <input type="text" name="username" required>
+    </label><br>
+
+    <label>Password:
+        <input type="password" name="password" minlength="6" required>
+    </label><br><br>
+
+    <button type="submit">Register</button>
+</form>
+`,
+    error: error,
+    currentUser: currentUser
+}) %>

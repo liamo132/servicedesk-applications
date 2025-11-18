@@ -1,0 +1,46 @@
+<%- include("../layout", {
+    body: `
+<h2>Ticket #${ticket.id}</h2>
+
+<p><strong>Title:</strong> ${ticket.title}</p>
+<p><strong>Status:</strong> ${ticket.status}</p>
+<p><strong>Category:</strong> ${ticket.category}</p>
+<p><strong>Created:</strong> ${ticket.created_at}</p>
+
+<h3>Description</h3>
+<div style="border:1px solid #ccc; background:#fff; padding:10px;">
+    ${ticket.description}
+</div>
+
+<hr>
+
+<h3>Your Comments</h3>
+`,
+    error: error,
+    currentUser: currentUser
+}) %>
+
+<% if (comments.length === 0) { %>
+    <p>No comments yet.</p>
+<% } else { %>
+    <% comments.forEach(c => { %>
+        <div style="border:1px solid #aaa; padding:10px; margin-bottom:10px;">
+            <strong><%= c.commenter %></strong><br>
+            <div><%= c.comment %></div>
+            <small><%= c.created_at %></small>
+        </div>
+    <% }) %>
+<% } %>
+
+<hr>
+
+<h3>Add Comment</h3>
+
+<form method="POST" action="/tickets/<%= ticket.id %>/comments">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <textarea name="comment" rows="4" cols="50" required></textarea><br>
+    <button type="submit">Add Comment</button>
+</form>
+
+<br>
+<a href="/tickets">Back to My Tickets</a>

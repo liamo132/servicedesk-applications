@@ -1,0 +1,39 @@
+<%- include("../layout", {
+    body: `
+<h2>My Tickets</h2>
+
+<form method="GET" action="/tickets">
+    <label>
+        Search:
+        <input 
+            type="text" 
+            name="search"
+            value="${search || ''}"
+            placeholder="Search your tickets"
+        >
+    </label>
+    <button type="submit">Search</button>
+</form>
+
+<p><a href="/tickets/new">Create New Ticket</a></p>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Created</th>
+    </tr>
+`
+}) %>
+
+<% tickets.forEach(t => { %>
+    <tr>
+        <td><%= t.id %></td>
+        <td><a href="/tickets/<%= t.id %>"><%= t.title %></a></td>
+        <td><%= t.status %></td>
+        <td><%= t.created_at %></td>
+    </tr>
+<% }) %>
+
+</table>
