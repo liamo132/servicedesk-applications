@@ -1,0 +1,31 @@
+<%- include("../layout", {
+    body: `
+<h2>System Logs</h2>
+
+<p>Recent log entries (high-level only, no stack traces).</p>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Level</th>
+        <th>Message</th>
+        <th>Timestamp</th>
+    </tr>
+`,
+    error: error,
+    currentUser: currentUser
+}) %>
+
+<% logs.forEach(l => { %>
+<tr>
+    <td><%= l.id %></td>
+    <td><%= l.level %></td>
+    <td><%= l.message %></td>
+    <td><%= l.created_at %></td>
+</tr>
+<% }) %>
+
+</table>
+
+<br>
+<a href="/admin">Back to Admin Panel</a>

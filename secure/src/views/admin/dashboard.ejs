@@ -1,0 +1,32 @@
+<%- include("../layout", {
+    body: `
+<h2>Admin Panel</h2>
+
+<p>All tickets in the system are listed below.</p>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>User</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th>Actions</th>
+    </tr>
+`,
+    error: error,
+    currentUser: currentUser
+}) %>
+
+<% tickets.forEach(t => { %>
+<tr>
+    <td><%= t.id %></td>
+    <td><%= t.title %></td>
+    <td><%= t.owner_username %></td>
+    <td><%= t.status %></td>
+    <td><%= t.created_at %></td>
+    <td><a href="/admin/tickets/<%= t.id %>">View</a></td>
+</tr>
+<% }) %>
+
+</table>
