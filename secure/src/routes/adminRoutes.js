@@ -41,7 +41,9 @@ router.get("/", requireAdmin, (req, res) => {
 
     res.render("admin/dashboard", {
       tickets: tickets || [],
-      error: null
+      error: null,
+      csrfToken: req.csrfToken ? req.csrfToken() : '',
+      currentUser: req.session.user
     });
   });
 });
@@ -101,7 +103,9 @@ router.get("/tickets/:id", requireAdmin, (req, res) => {
           ticket,
           adminComments: adminComments || [],
           userComments: userComments || [],
-          error: null
+          error: null,
+          csrfToken: req.csrfToken ? req.csrfToken() : '',
+          currentUser: req.session.user
         });
       });
     });
@@ -180,7 +184,9 @@ router.get("/logs", requireAdmin, (req, res) => {
 
     res.render("admin/logs", {
       logs: logs || [],
-      error: null
+      error: null,
+      csrfToken: req.csrfToken ? req.csrfToken() : '',
+      currentUser: req.session.user
     });
   });
 });

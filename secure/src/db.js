@@ -51,6 +51,19 @@ db.serialize(() => {
     )
   `);
 
+  // User comments - ADDED THIS TABLE
+  db.run(`
+    CREATE TABLE IF NOT EXISTS user_comments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      ticket_id INTEGER NOT NULL,
+      user_id INTEGER NOT NULL,
+      comment TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (ticket_id) REFERENCES tickets(id),
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    )
+  `);
+
   // Logs table (no stack traces or secrets)
   db.run(`
     CREATE TABLE IF NOT EXISTS logs (

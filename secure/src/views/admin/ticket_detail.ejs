@@ -19,59 +19,56 @@
 <h3>Update Status</h3>
 <form method="POST" action="/admin/tickets/${ticket.id}/status">
     <input type="hidden" name="_csrf" value="${csrfToken}">
-    <select name="status">
-        <option value="Open">Open</option>
-        <option value="In Progress">In Progress</option>
-        <option value="Waiting on User">Waiting on User</option>
-        <option value="Resolved">Resolved</option>
+
+    <select name="status" data-test="status-dropdown">
+        <option value="Open" ${ticket.status === "Open" ? "selected" : ""}>Open</option>
+        <option value="In Progress" ${ticket.status === "In Progress" ? "selected" : ""}>In Progress</option>
+        <option value="Waiting on User" ${ticket.status === "Waiting on User" ? "selected" : ""}>Waiting on User</option>
+        <option value="Resolved" ${ticket.status === "Resolved" ? "selected" : ""}>Resolved</option>
     </select>
-    <button type="submit">Update</button>
+    <button type="submit" data-test="update-status-btn">Update</button>
 </form>
 
 <hr>
 
 <h3>User Comments</h3>
-`,
-    error: error,
-    currentUser: currentUser
-}) %>
 
-<% if (userComments.length === 0) { %>
+${userComments.length === 0 ? `
     <p>No user comments yet.</p>
-<% } else { %>
-    <% userComments.forEach(c => { %>
-        <div style="border:1px solid #aaa; padding:10px; margin-bottom:10px;">
-            <strong><%= c.commenter %>:</strong><br>
-            <div><%= c.comment %></div>
-            <small><%= c.created_at %></small>
-        </div>
-    <% }) %>
-<% } %>
+` : userComments.map(c => `
+    <div class="user-comment">
+        <strong>${c.commenter}:</strong><br>
+        <div>${c.comment}</div>
+        <small>${c.created_at}</small>
+    </div>
+`).join('')}
 
 <hr>
 
 <h3>Admin Comments</h3>
 
-<% if (adminComments.length === 0) { %>
+<div id="admin-comments">
+${adminComments.length === 0 ? `
     <p>No admin comments yet.</p>
-<% } else { %>
-    <% adminComments.forEach(c => { %>
-        <div style="border:1px solid #aaa; margin-bottom:10px; padding:10px;">
-            <strong><%= c.admin_username %>:</strong><br>
-            <div><%= c.comment %></div>
-            <small><%= c.created_at %></small>
-        </div>
-    <% }) %>
-<% } %>
+` : adminComments.map(c => `
+    <div class="admin-comment" data-test="admin-comment">
+        <strong>${c.admin_username}:</strong><br>
+        <div>${c.comment}</div>
+        <small>${c.created_at}</small>
+    </div>
+`).join('')}
+</div>
 
 <h4>Add Admin Comment</h4>
 
-<form method="POST" action="/admin/tickets/<%= ticket.id %>/comments">
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-    <textarea name="comment" rows="4" cols="50" required></textarea>
+<form method="POST" action="/admin/tickets/${ticket.id}/comments" data-test="admin-comment-form">
+    <input type="hidden" name="_csrf" value="${csrfToken}">
+    <textarea name="comment" rows="4" cols="50" required data-test="admin-comment-input"></textarea>
     <br>
-    <button type="submit">Add Comment</button>
+    <button type="submit" data-test="submit-admin-comment">Add Comment</button>
 </form>
 
 <br>
 <a href="/admin">Back to Admin Panel</a>
+`
+}) %>
